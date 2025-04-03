@@ -1,6 +1,11 @@
 🐾 Animal Image Microservice
 A lightweight Spring Boot application designed to fetch, store, and serve random images of animals (cat, dog, bear, duck) using public APIs. The images and their metadata are stored in an embedded H2 database.
 
+✅ Basics
+Project name: RESTAPI_for_AnimalImages
+Maven builds a JAR: target/RESTAPI_for_AnimalImages-1.0-SNAPSHOT.jar
+App runs on port 8081
+
 📦 Features
 RESTful API to fetch & retrieve animal images
 Embedded H2 database (no setup required)
