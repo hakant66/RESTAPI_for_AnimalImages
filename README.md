@@ -37,40 +37,68 @@ The architecture diagram below illustrates the overall structure and data flow o
 
 
 🧪 Running the App
-Clone and Build
-bash
-git clone https://github.com/your-username/animal-image-service.git
-cd animal-image-service
+
+A. Clone & Run from GitHub 
+
+1. Clone the GitHub Repository 
+git clone https://github.com/hakant66/RESTAPI_for_AnimalImages.git
+cd RESTAPI_for_AnimalImages
 mvn clean install
-Run the App
-bash
+2. Make Sure Java Is Installed 
+* You need Java 17 or Java 22 installed. Check with: 
+java -version
+3. Build the Application (Using Maven) 
+* Make sure you have Maven installed. Check with: 
+mvn -version
+* If mvn exists, run:
+mvn clean package
+* This generates the executable JAR file in target 
+4.a. Run the application (Using Maven) 
 mvn spring-boot:run
-Access the app at: http://localhost:8081/index.html
+4.b. Run the application (Using provided scripts) 
+Windows:
+scripts\run.bat
+Linux:
+chmod +x scripts/run.sh
+./scripts/run.sh
+4.c. Run the application (Manual run with Java ) 
+java -Dserver.port=8081 -jar target/app.jar
+5. Open the Web App 
+http://localhost:8081/index.html
+Important: App is using port 8081 
 
 🖼️ UI Overview
-Select animal type and number of images
-Click Fetch & Save to store images
-Click Load Last Image to view the latest stored image
-If no image found, a duck 🦆 is shown instead
+    • http://localhost:8081/index.html
+    • Select an animal (cat, dog, bear, duck) 
+    • Choose how many images to fetch 
+    • Click Fetch & Save to store images
+    • Click Load Last Image to view the latest stored image
+    • If no image found, a duck 🦆 is shown instead
 
 ✅ Example Flow: Save & Fetch Image
-User clicks Fetch & Save
-Triggers: POST /api/animals/fetch?type=dog&count=1
-If fetch problem, an error message is displayed
-Controller → Service → Repository → H2 DB
-User clicks Load Last Image
-Triggers: GET /api/animals/last/image?type=dog
-If no image for animal type, an error message is displayed and a duck image returns instead
-Controller returns image
-UI displays image
+    1. User clicks Fetch & Save in UI
+    2. POST /api/animals/fetch?type=dog&count=1 → hits Controller
+    3. Controller passes to AnimalImageService
+    4. Service:
+        ◦ Builds image URL (e.g., https://place.dog/200/220)
+        ◦ Downloads it as byte[]
+        ◦ Creates and saves AnimalImage via Repository
+    5. Repository stores it in H2 DB
+    6. User clicks Load Last Image → GET /api/animals/last/image?type=dog
+    7. Controller returns latest image bytes as image/jpeg
+    8. UI displays the image 
 
 🧪 Run Tests
-bash
 mvn test
+Note: test provides surefire-reports 
 
 🧪 Running on Docker 
 docker run --rm -p 8081:8081 -v ${PWD}/target:/app -w /app eclipse-temurin:22-jdk-alpine java -jar app.jar
 
+📋 Common Troubleshooting
+    • ❌ java: command not found → Java not installed or not in PATH
+    • ❌ Could not find or load main class → Make sure you ran mvn package
+    • ❌ 404 not found → Make sure backend is running, then reload the browser
 
 👨‍💻 Author & License
 Author: Hakan Taskin
