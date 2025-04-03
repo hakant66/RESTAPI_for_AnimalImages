@@ -1,0 +1,135 @@
+<!DOCTYPE html> <!-- HTML5 document declaration -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8"> <!-- UTF-8 encoding ensures correct characters -->
+    <title>Animal Image Viewer</title> <!-- Title shown in browser tab -->
+</head>
+<body>
+<h1>Animal Image Viewer</h1>
+
+<!-- Form to select animal type and how many images to fetch -->
+<form id="fetchForm">
+    <label for="type">Animal Type:</label>
+    <select id="type">
+        <option value="dog">Dog</option>
+        <option value="bear">Bear</option>
+        <option value="cat">Cat</option>
+        <option value="duck">Duck</option>
+    </select>
+
+    <label for="count">Count:</label>
+    <input type="number" id="count" value="1" min="1" />
+
+    <button type="submit">Fetch & Save</button>
+</form>
+
+<h2>Last Fetched Image</h2>
+<!-- Placeholder for the last fetched image -->
+<img id="animalImage" src="" alt="Animal will appear here" width="300" />
+<br>
+
+<!-- Link to download the image (hidden by default) -->
+<a id="downloadLink" href="#" download="animal-image.jpg" style="display:none">Download Image</a>
+<br>
+
+<!-- Button to manually load the last image -->
+<button onclick="loadLastImage()">Load Last Image</button>
+
+<!-- Text area to display error messages -->
+<p id="errorMessage" style="color: red;"></p>
+
+<h3>How it works</h3>
+<ol>
+    <li>Select an animal and how many images to fetch</li>
+    <li>Click \"Fetch & Save\" to store image(s) via the backend</li>
+    <li>Then manually click "Load Last Image" to retrieve the most recent one</li>
+    <li>If found, the image will display and can be downloaded</li>
+    <li>If image not found, then a duck  image will display instead!</li>
+</ol>
+
+<!-- JavaScript to handle form submission and image loading -->
+<script>
+    // When the form is submitted, call the backend to fetch & save images
+    document.getElementById("fetchForm").addEventListener("submit", async function (e) {
+        e.preventDefault(); // Prevent full-page reload
+
+        const type = document.getElementById("type").value;
+        const count = document.getElementById("count").value;
+        const errorElement = document.getElementById("errorMessage");
+        const duckUrl = "https://random-d.uk/api/randomimg"; // fallback image
+        const imgElement = document.getElementById("animalImage");
+        const downloadLink = document.getElementById("downloadLink");
+
+        errorElement.textContent = ""; // Clear any previous error message
+
+        // Send POST request to backend to fetch images
+        try {
+            const response = await fetch(`/api/animals/fetch?type=${type}&count=${count}`, {
+                method: "POST"
+            });
+
+            if (!response.ok) {
+                // Display HTTP error
+                const errorMsg = `❌ Backend error (${response.status}): Failed to fetch images for type: ${type}`;
+                console.error(errorMsg);
+                errorElement.textContent = errorMsg;
+                return;
+            }
+
+            console.log("✅ Images fetched and saved.");
+            errorElement.style.color = "green";
+            errorElement.textContent = `✅ Images for '${type}' successfully saved!`;
+
+        } catch (err) {
+            // Network failure or server unreachable (521, DNS failure, timeout, etc.)
+            const errorMsg = `❌ Network error: Could not fetch images. ${err.message}`;
+            console.error(errorMsg);
+            errorElement.textContent = errorMsg;
+        }
+    });
+
+    // Function to retrieve and display the last stored image
+    async function loadLastImage() {
+        const type = document.getElementById("type").value;
+        const errorElement = document.getElementById("errorMessage");
+        const imgElement = document.getElementById("animalImage");
+        const downloadLink = document.getElementById("downloadLink");
+        const duckUrl = "https://random-d.uk/api/randomimg"; // Duck fallback defined early
+
+        // Reset UI
+        errorElement.textContent = ""; // Clear previous error
+        imgElement.src = "";           // Clear previous image
+        downloadLink.style.display = "none"; // Hide download link
+
+        try {
+            // GET request to fetch the last stored image
+            const response = await fetch(`/api/animals/last/image?type=${type}`);
+            if (!response.ok) {
+                // Show error message
+                // Backend couldn't find image — use duck fallback
+                errorElement.textContent = `❌ No image found for type: ${type}. Showing a duck instead 🦆`;
+                // Fallback to duck image
+                imgElement.src = duckUrl;
+                downloadLink.href = duckUrl;
+                downloadLink.style.display = "inline";
+                return;
+            }
+
+            // Convert image blob to object URL and show it
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            imgElement.src = url;
+            downloadLink.href = url;
+            downloadLink.style.display = "inline";
+
+        } catch (err) {
+            // Handle unexpected network/server errors with duck fallback
+            errorElement.textContent = `⚠️ Error loading image: ${err.message}. Showing a duck instead 🦆`;
+            imgElement.src = duckUrl;
+            downloadLink.href = duckUrl;
+            downloadLink.style.display = "inline";
+        }
+    }
+</script>
+</body>
+</html>
