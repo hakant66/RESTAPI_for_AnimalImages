@@ -68,6 +68,10 @@ UI displays image
 bash
 mvn test
 
+🧪 Running on Docker 
+docker run --rm -p 8081:8081 -v ${PWD}/target:/app -w /app eclipse-temurin:22-jdk-alpine java -jar app.jar
+
+
 👨‍💻 Author & License
 Author: Hakan Taskin
 Version: 1.0
