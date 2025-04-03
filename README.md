@@ -1,15 +1,15 @@
 🐾 Animal Image Microservice
-A lightweight Spring Boot application to fetch, store, and serve random images of animals (cat, dog, bear, duck) using public APIs. Images and their metadata are stored in an embedded H2 database. A simple HTML UI is included for manual testing.
+A lightweight Spring Boot application designed to fetch, store, and serve random images of animals (cat, dog, bear, duck) using public APIs. The images and their metadata are stored in an embedded H2 database.
 
 📦 Features
-    • RESTful API to fetch & retrieve animal images
-    • Embedded H2 database (no setup required)
-    • Stores image URL, type, timestamp, and binary data (BLOB)
-    • Simple HTML UI with download link
-    • Fallback to duck image if image not found
-    • Logging with SLF4J (info, warn, error levels)
-    • Automated integration tests using JUnit + MockMvc
-    
+RESTful API to fetch & retrieve animal images
+Embedded H2 database (no setup required)
+Stores image URL, type, timestamp, and binary data (BLOB)
+Simple HTML UI with download link
+Fallback to duck image if image not found
+Logging with SLF4J (info, warn, error levels)
+Automated integration tests using JUnit + MockMvc
+
 🚀 Technologies Used
 Layer	Technology
 Language	Java 22
@@ -30,34 +30,42 @@ GET	/api/animals/last/image?type=bear	Get last stored image (as JPEG)
 🧭 Architecture Overview
 The architecture diagram below illustrates the overall structure and data flow of the application:
 
+
 🧪 Running the App
-1. Clone and Build
+Clone and Build
+bash
 git clone https://github.com/your-username/animal-image-service.git
 cd animal-image-service
 mvn clean install
-2. Run the App
+Run the App
+bash
 mvn spring-boot:run
-Important: Access the app at: http://localhost:8081/index.html
+Access the app at: http://localhost:8081/index.html
 
 🖼️ UI Overview
-    • Select animal type and number of images
-    • Click Fetch & Save to store images
-    • Click Load Last Image to view the latest stored image
-    • If no image found, a duck 🦆 is shown instead
-    
+Select animal type and number of images
+Click Fetch & Save to store images
+Click Load Last Image to view the latest stored image
+If no image found, a duck 🦆 is shown instead
+
 ✅ Example Flow: Save & Fetch Image
-    1. User clicks Fetch & Save
-    2. Triggers: POST /api/animals/fetch?type=dog&count=1 (if fetch problem, error message displayed)
-    3. Controller → Service → Repository → H2 DB
-    4. User clicks Load Last Image
-    5. Triggers: GET /api/animals/last/image?type=dog (if no image for animal type then an error message displayed and a duck image returns instead)
-    6. Controller returns image
-    7. UI displays image 
-    
+User clicks Fetch & Save
+Triggers: POST /api/animals/fetch?type=dog&count=1
+If fetch problem, an error message is displayed
+Controller → Service → Repository → H2 DB
+User clicks Load Last Image
+Triggers: GET /api/animals/last/image?type=dog
+If no image for animal type, an error message is displayed and a duck image returns instead
+Controller returns image
+UI displays image
+
 🧪 Run Tests
+bash
 mvn test
+
 👨‍💻 Author & License
 Author: Hakan Taskin
 Version: 1.0
 Date: 2025-04-03
-MIT License
+License: MIT License
+
